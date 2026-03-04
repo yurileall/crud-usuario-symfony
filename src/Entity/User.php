@@ -10,6 +10,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Attribute\Groups;
 
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -39,6 +40,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user_read'])]
     #[ORM\Column(type: 'boolean')]
     private bool $flgAtivo = true;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTime $dataCadastro = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTime $dataAtualizacao = null;
+
+    // public function __construct()
+    // {
+    //     $this->dataCadastro = new \DateTimeImmutable();
+    // }
+
+    #[ORM\PrePersist]
+    public function setDataCadastro(): void
+    {
+        $this->dataCadastro = new \DateTime();
+    }
+
+    #[ORM\PreUpdate]
+    public function setDataAtualizacao(): void
+    {
+        $this->dataAtualizacao = new \DateTime();
+    }
+
+    public function getDataCadastro(): \DateTime
+    {
+        return $this->dataCadastro;
+    }
+
+    public function getDataAtualizacao(): ?\DateTime
+    {
+        return $this->dataAtualizacao;
+    }
 
     public function getId(): ?int
     {

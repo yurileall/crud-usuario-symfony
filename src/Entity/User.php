@@ -41,22 +41,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private bool $flgAtivo = true;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
-    private ?\DateTime $dataCadastro = null;
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeImmutable $dataCadastro = null;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTime $dataAtualizacao = null;
 
-    // public function __construct()
+    public function __construct()
+    {
+        $this->dataCadastro = new \DateTimeImmutable();
+    }
+
+    // #[ORM\PrePersist]
+    // public function setDataCadastro(): void
     // {
     //     $this->dataCadastro = new \DateTimeImmutable();
     // }
-
-    #[ORM\PrePersist]
-    public function setDataCadastro(): void
-    {
-        $this->dataCadastro = new \DateTime();
-    }
 
     #[ORM\PreUpdate]
     public function setDataAtualizacao(): void
@@ -64,7 +64,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->dataAtualizacao = new \DateTime();
     }
 
-    public function getDataCadastro(): \DateTime
+    public function getDataCadastro(): \DateTimeImmutable
     {
         return $this->dataCadastro;
     }

@@ -24,12 +24,25 @@ class UserController extends AbstractController
         $this->userService = $userService;
     }
 
+    public function validarToken($tokenAuthorization): bool
+    {
+        if (!$tokenAuthorization) {
+            return false;
+        }
+
+        $token = str_replace('Bearer ', '', $tokenAuthorization);
+
+        return $token === $this->apiToken;
+    }
+
     //Listar todos os usuários
     #[Route('/users', methods: ['GET'],  name: 'user.index')]
     public function index(Request $request): JsonResponse
     {
-        if ($request->headers->get('Authorization') !== "Bearer {$this->apiToken}") {
-            return $this->json(['msg' => 'Acesso negado: token invalido'], 401);
+        $tokenHeadersAutorization = $request->headers->get('Authorization');
+
+        if (!$this->validarToken($tokenHeadersAutorization)) {
+            return $this->json(['msg' => "Acesso negado: token inválido"], 401);
         }
 
         return $this->json($this->userService->getAllUsers(), 200, [], ['groups' => 'user_read']);
@@ -39,7 +52,9 @@ class UserController extends AbstractController
     #[Route('/users', methods: ['POST'], name: 'usersCreate.create')]
     public function create(Request $request): JsonResponse
     {
-        if ($request->headers->get('Authorization') !== "Bearer {$this->apiToken}") {
+        $tokenHeadersAutorization = $request->headers->get('Authorization');
+
+        if (!$this->validarToken($tokenHeadersAutorization)) {
             return $this->json(['msg' => "Acesso negado: token inválido"], 401);
         }
 
@@ -65,8 +80,10 @@ class UserController extends AbstractController
     #[Route('/users/{id}', methods: ['PUT'], name: 'usersUpdate.update')]
     public function update(int $id, Request $request): JsonResponse
     {
-        if ($request->headers->get('Authorization') !== "Bearer {$this->apiToken}") {
-            return $this->json(['msg' => 'Acesso negado: token inválidio'], 401);
+        $tokenHeadersAutorization = $request->headers->get('Authorization');
+
+        if (!$this->validarToken($tokenHeadersAutorization)) {
+            return $this->json(['msg' => "Acesso negado: token inválido"], 401);
         }
 
         $data = $request->toArray();
@@ -94,7 +111,9 @@ class UserController extends AbstractController
     public function delete(int $id, Request $request): JsonResponse
     {
 
-        if ($request->headers->get('Authorization') !== "Bearer {$this->apiToken}") {
+        $tokenHeadersAutorization = $request->headers->get('Authorization');
+
+        if (!$this->validarToken($tokenHeadersAutorization)) {
             return $this->json(['msg' => "Acesso negado: token inválido"], 401);
         }
 

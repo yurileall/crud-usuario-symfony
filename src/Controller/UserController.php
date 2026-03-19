@@ -36,7 +36,7 @@ class UserController extends AbstractController
     }
 
     //Listar todos os usuários
-    #[Route('/users', methods: ['GET'],  name: 'user.index')]
+    #[Route('users', methods: ['GET'],  name: 'user.index')]
     public function index(Request $request): JsonResponse
     {
         $tokenHeadersAutorization = $request->headers->get('Authorization');

@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
+// use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
@@ -17,47 +17,41 @@ class UserController extends AbstractController
     public function __construct(
         UserService $userService,
 
-        #[Autowire('%env(API_TOKEN)%')]
-        private string $apiToken
+        // #[Autowire('%env(API_TOKEN)%')]
+        // private string $apiToken
 
     ) {
         $this->userService = $userService;
     }
 
-    public function validarToken($tokenAuthorization): bool
-    {
-        if (!$tokenAuthorization) {
-            return false;
-        }
+    // public function validarToken($tokenAuthorization): bool
+    // {
+    //     if (!$tokenAuthorization) {
+    //         return false;
+    //     }
 
-        $token = str_replace('Bearer ', '', $tokenAuthorization);
+    //     $token = str_replace('Bearer ', '', $tokenAuthorization);
 
-        return $token === $this->apiToken;
-    }
+    //     return $token === $this->apiToken;
+    // }
 
     //Listar todos os usuários
-    #[Route('users', methods: ['GET'],  name: 'user.index')]
+    #[Route('api/users', methods: ['GET'],  name: 'user.index')]
     public function index(Request $request): JsonResponse
     {
         $tokenHeadersAutorization = $request->headers->get('Authorization');
 
-        if (!$this->validarToken($tokenHeadersAutorization)) {
-            return $this->json(['msg' => "Acesso negado: token inválido"], 401);
-        }
+        // if (!$this->validarToken($tokenHeadersAutorization)) {
+        //     return $this->json(['msg' => "Acesso negado: token inválido"], 401);
+        // }
 
         return $this->json($this->userService->getAllUsers(), 200, [], ['groups' => 'user_read']);
     }
 
     // Criar Usuários
-    #[Route('/users', methods: ['POST'], name: 'usersCreate.create')]
+    #[Route('api/users', methods: ['POST'], name: 'usersCreate.create')]
     public function create(Request $request): JsonResponse
     {
-        $tokenHeadersAutorization = $request->headers->get('Authorization');
-
-        if (!$this->validarToken($tokenHeadersAutorization)) {
-            return $this->json(['msg' => "Acesso negado: token inválido"], 401);
-        }
-
         $data = $request->toArray();
 
         $user = $this->userService->createUser($data['nome'], $data['email'], $data['senha']);
@@ -77,14 +71,9 @@ class UserController extends AbstractController
 
 
     //Editar Usuários
-    #[Route('/users/{id}', methods: ['PUT'], name: 'usersUpdate.update')]
+    #[Route('api/users/{id}', methods: ['PUT'], name: 'usersUpdate.update')]
     public function update(int $id, Request $request): JsonResponse
     {
-        $tokenHeadersAutorization = $request->headers->get('Authorization');
-
-        if (!$this->validarToken($tokenHeadersAutorization)) {
-            return $this->json(['msg' => "Acesso negado: token inválido"], 401);
-        }
 
         $data = $request->toArray();
 
@@ -107,15 +96,9 @@ class UserController extends AbstractController
     }
 
     //Deletar Usuários
-    #[Route('/users/{id}', methods: ['DELETE'], name: 'usersDelete.delete')]
+    #[Route('api/users/{id}', methods: ['DELETE'], name: 'usersDelete.delete')]
     public function delete(int $id, Request $request): JsonResponse
     {
-
-        $tokenHeadersAutorization = $request->headers->get('Authorization');
-
-        if (!$this->validarToken($tokenHeadersAutorization)) {
-            return $this->json(['msg' => "Acesso negado: token inválido"], 401);
-        }
 
         $deleted = $this->userService->deleteUser($id);
 

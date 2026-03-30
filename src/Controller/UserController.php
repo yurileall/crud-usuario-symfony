@@ -37,9 +37,9 @@ class UserController extends AbstractController
 
     //Listar todos os usuários
     #[Route('api/users', methods: ['GET'],  name: 'user.index')]
-    public function index(Request $request): JsonResponse
+    public function index(): JsonResponse
     {
-        $tokenHeadersAutorization = $request->headers->get('Authorization');
+        // $tokenHeadersAutorization = $request->headers->get('Authorization');
 
         // if (!$this->validarToken($tokenHeadersAutorization)) {
         //     return $this->json(['msg' => "Acesso negado: token inválido"], 401);

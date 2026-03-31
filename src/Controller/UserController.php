@@ -108,6 +108,8 @@ class UserController extends AbstractController
             ], 404);
         }
 
-        return $this->json(null, 204);
+        return $this->json([
+            'msg' => "Usuário deletado com sucesso!"
+        ], 200);
     }
 }

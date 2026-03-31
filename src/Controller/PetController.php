@@ -36,8 +36,50 @@ final class PetController extends AbstractController
             'pet' => [
                 'id' => $pet->getId(),
                 'nome' => $pet->getNome(),
-                'Dono' => $pet->getUser()->getNome()
+                'idUser' => $pet->getUser()->getId(),
+                'user' => $pet->getUser()->getNome()
             ]
         ]);
+    }
+
+    #[Route('api/pet/{idPet}', name: 'pet.update', methods: ['PUT'])]
+    public function update(int $idPet, Request $request): JsonResponse
+    {
+        $dados = $request->toArray();
+
+        $pet = $this->petService->updatePet($idPet, $dados);
+
+        if (!$pet) {
+            $this->json([
+                'msg' => "Pet não encontado!"
+            ], 404);
+        }
+
+        return $this->json([
+            'msg' => "Pet criado com sucesso!",
+            'pet' => [
+                'nome' => $pet->getNome(),
+                'dataNascimento' => $pet->getDataNascimento()->format('d/m/Y'),
+                'idUser' => $pet->getUser()->getId(),
+                'user' => $pet->getUser()->getNome()
+
+            ]
+        ], 200, [], ['json_encode_options' => JSON_UNESCAPED_SLASHES]);
+    }
+
+    #[Route('api/pet/{idPet}', name: 'pet.delete', methods: ['DELETE'])]
+    public function delete(int $idPet)
+    {
+        $deletePet = $this->petService->delelePet($idPet);
+
+        if (empty($deletePet)) {
+            return $this->json([
+                'msg' => "Pet não encontrado!"
+            ], 404);
+        }
+
+        return $this->json([
+            'msg' => "Pet deletado com sucesso!"
+        ], 200);
     }
 }

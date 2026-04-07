@@ -17,7 +17,7 @@ final class PetController extends AbstractController
         $this->petService = $petService;
     }
 
-    #[Route('api/pet', name: 'pet,index', methods: ['GET'])]
+    #[Route('api/pet', name: 'pet.index', methods: ['GET'])]
     public function index(): JsonResponse
     {
         return $this->json($this->petService->todosPet(), 200, []);

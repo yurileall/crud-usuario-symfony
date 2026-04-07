@@ -23,6 +23,10 @@ class Pet
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
+    #[ORM\ManyToOne(targetEntity: TipoPet::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private TipoPet $tipoPet;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -58,6 +62,17 @@ class Pet
     public function setUser(User $user): self
     {
         $this->user = $user;
+        return $this;
+    }
+
+    public function getTipoPet(): TipoPet
+    {
+        return $this->tipoPet;
+    }
+
+    public function setTipoPet(TipoPet $tipoPet): self
+    {
+        $this->tipoPet = $tipoPet;
         return $this;
     }
 }

@@ -19,7 +19,7 @@ final class TipoPetController extends AbstractController
         $this->tipoPetService = $tipoPetService;
     }
 
-    #[Route('/tipo/pet', name: 'tipoPet.index', methods: ['GET'])]
+    #[Route('api/tipo/pet', name: 'tipoPet.index', methods: ['GET'])]
     public function index(): Response
     {
         return $this->json(
@@ -29,7 +29,7 @@ final class TipoPetController extends AbstractController
         );
     }
 
-    #[Route('/tipo/pet', name: 'tipoPet.create', methods: ['POST'])]
+    #[Route('api/tipo/pet', name: 'tipoPet.create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
         $dados = $request->toArray();
@@ -48,5 +48,42 @@ final class TipoPetController extends AbstractController
                 'nome' => $tipoPet->getNome()
             ]
         ], 201);
+    }
+
+    #[Route('api/tipo/pet/{id}', name: 'tipoPet.update', methods: ['PUT'])]
+    public function update(Request $request, int $id): JsonResponse
+    {
+        $dados = $request->toArray();
+        $tipoPetUpdate = $this->tipoPetService->updateTipoPet($id, $dados);
+
+        if (!$tipoPetUpdate) {
+            return $this->json([
+                'msg' => "Erro ao atualizar tipo de pet!"
+            ], 400);
+        }
+
+        return $this->Json([
+            'msg' => "Tipo de pet atualizado com sucesso!",
+            'tipoPet' => [
+                'tipoPet' => $tipoPetUpdate->getId(),
+                'nome' => $tipoPetUpdate->getNome()
+            ]
+        ], 200);
+    }
+
+    #[Route('api/tipo/pet/{id}', name: 'tipoPet.delete', methods: ['DELETE'])]
+    public function delete(int $id): JsonResponse
+    {
+        $tipPetDelete = $this->tipoPetService->deleteTipoPet($id);
+
+        if (!$tipPetDelete) {
+            return $this->json([
+                'msg' => "Erro ao deletar tipo de pet!"
+            ], 400);
+        }
+
+        return $this->json([
+            'msg' => "Tipo Pet deletado com sucesso!"
+        ], 200);
     }
 }

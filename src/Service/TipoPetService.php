@@ -29,4 +29,33 @@ class TipoPetService
 
         return $tipoPet;
     }
+
+    public function updateTipoPet(int $id, $dados): ?TipoPet
+    {
+        $tipoPet = $this->em->getRepository(TipoPet::class)->find($id);
+
+        if (!$tipoPet) {
+            return null;
+        }
+
+        $tipoPet->setNome($dados['nome']);
+
+        $this->em->flush();
+
+        return $tipoPet;
+    }
+
+    public function deleteTipoPet(int $id): bool
+    {
+        $tipoPet = $this->em->getRepository(TipoPet::class)->find($id);
+
+        if (!$tipoPet) {
+            return false;
+        }
+
+        $this->em->remove($tipoPet);
+        $this->em->flush();
+
+        return true;
+    }
 }
